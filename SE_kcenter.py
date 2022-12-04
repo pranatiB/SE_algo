@@ -1,83 +1,59 @@
-import random;
-import pylab as plt
-import numpy as np
-import time
+# Python3 program for the above approach
+def maxindex(dist, n):
+	mi = 0
+	for i in range(n):
+		if (dist[i] > dist[mi]):
+			mi = i
+	return mi
 
-def main():
-    min = 0
-    max = 200
-    vertexes = set()
-    for i in range(0, 100):
-        vertexes.add(randomVertex(min, max))
-    s_greedy = greedy(vertexes, 10)
-    plot_points(s_greedy, "ro")
-    plot_points(vertexes, "bo")
-    plt.show()	
+def selectKcities(n, weights, k):
+	dist = [0]*n
+	centers = []
 
-def plot_points(vertexes, marker):
-	points = []
-	for v in vertexes:
-		points.append(v.points())
+	for i in range(n):
+		dist[i] = 10**9
+		
+	# index of city having the
+	# maximum distance to it's
+	# closest center
+	max = 0
+	for i in range(k):
+		centers.append(max)
+		for j in range(n):
 
-	xs = [x for [x, y] in points]
-	ys = [y for [x, y] in points]
+			# updating the distance
+			# of the cities to their
+			# closest centers
+			dist[j] = min(dist[j], weights[max][j])
 
-	plt.plot(xs, ys, marker)
+		# updating the index of the
+		# city with the maximum
+		# distance to it's closest center
+		max = maxindex(dist, n)
 
-def greedy(vertexes, k):
-	s = [];
-	pick = randomPick(vertexes);
-	s.append(pick)
-	print (pick)
-	while len(s) < k:
-		max = distance(vertexes, s)
-		vertexes.remove(max)
-		s.append(max)
-	return s
+	# Printing the maximum distance
+	# of a city to a center
+	# that is our answer
+	# print()
+	print(dist[max])
 
+	# Printing the cities that
+	# were chosen to be made
+	# centers
+	for i in centers:
+		print(i, end = " ")
 
-def randomPick(vertexes):
-	# rndm plz ;)
-	pick = random.sample(vertexes, 1)[0]
-	vertexes.remove(pick)
-	return pick
+# Driver Code
+if __name__ == '__main__':
+	n = 4
+	weights = [ [ 0, 4, 8, 5 ],
+			[ 4, 0, 10, 7 ],
+			[ 8, 10, 0, 9 ],
+			[ 5, 7, 9, 0 ] ]
+	k = 2
 
-def distance(vertexes, picked):
-	min = np.inf 
-	min_v = None
-	real_max = 0
-	real_max_v = None
-	for v in vertexes:
-		min = np.inf
-		for p in picked:	
-			d = np.sqrt((v.x - p.x)**2 + (v.y - p.y)**2)
-			print("current min %s vs %d" % (min, d))
-			if d < min:
-				min = d
-				min_v = v
-		if min > real_max:
-			real_max = min 
-			real_max_v = min_v
-   
-   		print real_max, real_max_v
+	# Function Call
+	selectKcities(n, weights, k)
 
-	return real_max_v
-	
-def randomVertex(min, max):
-	return Vertex(random.randint(min, max), random.randint(min, max))
+# This code is contributed by mohit kumar 29.
 
-class Vertex:
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-
-	def __str__(self):
-		return "(%s,%s)" % (self.x, self.y)
-
-	def __repr__(self):
-    	return "(%s,%s)" % (self.x, self.y)
- 	def points(self):
-		return [self.x, self.y]
-
-if __name__ == "__main__":
-	main()
